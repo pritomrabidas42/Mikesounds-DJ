@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Order #{{ order.id }}</h2>
+<p>Status: {{ order.get_status_display }}</p>
+<p>Payment Status: {{ order.get_payment_status_display }}</p>
+<p>Subtotal: {{ order.subtotal }}</p>
+<p>Shipping Fee: {{ order.shipping_fee }}</p>
+<p>Discount: {{ order.discount }}</p>
+<p>Grand Total: {{ order.grand_total }}</p>
+
+<h3>Items</h3>
+<table border="1" cellpadding="5" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Variation</th>
+      <th>Quantity</th>
+      <th>Unit Price</th>
+      <th>Line Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in order.items.all %}
+    <tr>
+      <td>{{ item.product.title }}</td>
+      <td>{{ item.variation.size if item.variation else 'N/A' }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.unit_price }}</td>
+      <td>{{ item.line_total }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
