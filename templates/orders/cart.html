@@ -1,0 +1,35 @@
+<h2>My Cart</h2>
+<table>
+<tr><th>Image</th><th>Product</th><th>Variation</th><th>Qty</th><th>Price</th><th>Total</th><th>Action</th></tr>
+{% for item in items %}
+<tr>
+<td>
+{% if item.product.images.first %}
+<img src="{{ item.product.images.first.image.url }}" width="80">
+{% endif %}
+</td>
+<td>{{ item.product.title }}</td>
+<td>
+<form method="post" action="{% url 'update_cart' item.id %}">{% csrf_token %}
+<select name="variation_id">
+    <option value="">Default</option>
+    {% for var in item.product.variations.all %}
+        <option value="{{ var.id }}" {% if item.variation and item.variation.id == var.id %}selected{% endif %}>
+            {{ var.size }} - {{ var.price }}
+        </option>
+    {% endfor %}
+</select>
+</td>
+<td>
+<input type="number" name="quantity" value="{{ item.quantity }}" min="0">
+<button type="submit">Update</button>
+</form>
+</td>
+
+<td>{{ item.unit_price }}</td>
+<td>{{ item.line_total }}</td>
+<td><a href="{% url 'update_cart' item.id %}?delete=1">Remove</a></td>
+</tr>
+{% endfor %}
+</table>
+<a href="{% url 'checkout_view' %}">Proceed to Checkout</a>

@@ -24,20 +24,23 @@
         <tr>
             <td>
                 {% for image in product.images.all|slice:":4" %}
-                    <img src="{{ image.image.url }}" alt="{{ product.title }}" width="60" height="60">
+                     <a href="{% url 'product_detail' product.id %}">
+            <img src="{{ image.image.url }}" alt="{{ product.title }}" width="60" height="60">
+        </a>
                 {% endfor %}
             </td>
-            <td>{{ product.title }}</td>
+            <a href="{% url 'product_detail' product.id %}">{{ product.title }}</a>
             <td>{{ product.description|truncatechars:100 }}</td>
             <td>
-                {% with product.variations.all|first as first_var %}
-                    {% if first_var %}
-                        {{ first_var.price }}
-                    {% else %}
-                        N/A
-                    {% endif %}
-                {% endwith %}
-            </td>
+            {% if product.variations.exists %}
+  {% with first_var=product.variations.all|first %}
+    {{ first_var.price }}
+  {% endwith %}
+{% else %}
+  {{ product.price }}
+{% endif %}
+
+</td>
             <td>{{ product.brand.name }}</td>
         </tr>
         {% empty %}

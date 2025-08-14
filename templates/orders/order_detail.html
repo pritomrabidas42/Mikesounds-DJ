@@ -1,0 +1,30 @@
+<h2>Order #{{ order.id }}</h2>
+<p>Status: {{ order.status }}</p>
+<p>Payment Status: {{ order.payment_status }}</p>
+<p>Grand Total: {{ order.grand_total }}</p>
+
+<h3>Items</h3>
+<table>
+<tr><th>Image</th><th>Product</th><th>Variation</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>
+{% for item in items %}
+<tr>
+<td>{% if item.product.images.first %}<img src="{{ item.product.images.first.image.url }}" width="80">{% endif %}</td>
+<td>{{ item.product.title }}</td>
+<td>
+{% if item.variation %}
+    {{ item.variation.size }}
+{% endif %}
+</td>
+<td>{{ item.quantity }}</td>
+<td>{{ item.unit_price }}</td>
+<td>{{ item.line_total }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Tracking Timeline</h3>
+<ul>
+{% for t in order.tracking.all %}
+<li>{{ t.updated_at }} - {{ t.status }} - {{ t.remarks }}</li>
+{% endfor %}
+</ul>

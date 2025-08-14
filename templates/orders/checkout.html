@@ -1,0 +1,59 @@
+<h2>Checkout</h2>
+
+<h3>Items</h3>
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Product</th>
+        <th>Variation</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+        <th>Action</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.product.title }}</td>
+        <td>
+            <form method="post" action="{% url 'update_checkout_cart' item.id %}">
+                {% csrf_token %}
+                <select name="variation_id">
+                    <option value="">Default</option>
+                    {% for var in item.product.variations.all %}
+                    <option value="{{ var.id }}" {% if item.variation and item.variation.id == var.id %}selected{% endif %}>
+                        {{ var.size }} - {{ var.price }}
+                    </option>
+                    {% endfor %}
+                </select>
+        </td>
+        <td>
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+        </td>
+        <td>{{ item.unit_price }}</td>
+        <td>{{ item.line_total }}</td>
+        <td>
+            <button type="submit">Update</button>
+            </form>
+            <a href="{% url 'update_checkout_cart' item.id %}?delete=1">Remove</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Shipping Address</h3>
+<form method="POST" action="{% url 'place_order' %}" class="space-y-3">
+    {% csrf_token %}
+    <input name="name" placeholder="Full Name" class="w-full border p-2" required>
+    <input name="email" placeholder="Email" class="w-full border p-2" required>
+    <input name="phone" placeholder="Phone" class="w-full border p-2" required>
+    <input name="country" placeholder="Country" class="w-full border p-2" required>
+    <input name="city" placeholder="City" class="w-full border p-2" required>
+    <input name="postal_code" placeholder="Postal Code" class="w-full border p-2" required>
+    <textarea name="street" placeholder="Street Address" class="w-full border p-2" required></textarea>
+
+    <p>Subtotal: {{ subtotal }}</p>
+    <p>Shipping Fee: {{ shipping_fee }}</p>
+    <p>Discount: {{ discount }}</p>
+    <p><strong>Grand Total: {{ grand_total }}</strong></p>
+
+    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Place Order</button>
+</form>

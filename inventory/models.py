@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator
+from django.db.models import F, Sum, DecimalField, ExpressionWrapper
 from products.models import Product
 
 class Supplier(models.Model):
@@ -32,7 +33,14 @@ class Purchase(models.Model):
 
     @property
     def total_amount(self):
-        agg = self.items.aggregate(total=models.Sum(models.F('quantity') * models.F('price')))
+        agg = self.items.aggregate(
+            total=Sum(
+                ExpressionWrapper(
+                    F('quantity') * F('price'),
+                    output_field=DecimalField(max_digits=12, decimal_places=2)
+                )
+            )
+        )
         return agg['total'] or 0
 
 
@@ -61,11 +69,11 @@ class SupplierPayment(models.Model):
     ]
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='payments')
     method = models.CharField(max_length=20, choices=METHOD_CHOICES)
-    account_holder = models.CharField(max_length=255, blank=True)   # প্রাপকের নাম
-    account_number = models.CharField(max_length=50, blank=True)    # Mobile/Bank নম্বর
-    bank_name = models.CharField(max_length=100, blank=True)        # Bank হলে নাম
-    bank_branch = models.CharField(max_length=100, blank=True)      # Bank হলে Branch
-    transaction_id = models.CharField(max_length=100, blank=True)   # Mobile banking TXN ID
+    account_holder = models.CharField(max_length=255, blank=True)
+    account_number = models.CharField(max_length=50, blank=True)
+    bank_name = models.CharField(max_length=100, blank=True)
+    bank_branch = models.CharField(max_length=100, blank=True)
+    transaction_id = models.CharField(max_length=100, blank=True)
     amount = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(0.01)])
     date = models.DateField(default=timezone.now)
     note = models.CharField(max_length=255, blank=True)
