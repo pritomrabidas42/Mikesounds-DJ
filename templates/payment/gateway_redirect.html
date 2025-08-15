@@ -1,0 +1,7 @@
+<h2>Redirecting to {{ gateway_url }}</h2>
+<form id="gatewayForm" action="{{ gateway_url }}" method="post">
+{% for k,v in payload.items %}
+<input type="hidden" name="{{ k }}" value="{{ v }}">
+{% endfor %}
+</form>
+<script>document.getElementById('gatewayForm').submit();</script>

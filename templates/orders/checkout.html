@@ -2,58 +2,51 @@
 
 <h3>Items</h3>
 <table border="1" cellpadding="5">
-    <tr>
-        <th>Product</th>
-        <th>Variation</th>
-        <th>Quantity</th>
-        <th>Unit Price</th>
-        <th>Total</th>
-        <th>Action</th>
-    </tr>
-    {% for item in items %}
-    <tr>
-        <td>{{ item.product.title }}</td>
-        <td>
-            <form method="post" action="{% url 'update_checkout_cart' item.id %}">
-                {% csrf_token %}
-                <select name="variation_id">
-                    <option value="">Default</option>
-                    {% for var in item.product.variations.all %}
-                    <option value="{{ var.id }}" {% if item.variation and item.variation.id == var.id %}selected{% endif %}>
-                        {{ var.size }} - {{ var.price }}
-                    </option>
-                    {% endfor %}
-                </select>
-        </td>
-        <td>
-            <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
-        </td>
-        <td>{{ item.unit_price }}</td>
-        <td>{{ item.line_total }}</td>
-        <td>
-            <button type="submit">Update</button>
-            </form>
-            <a href="{% url 'update_checkout_cart' item.id %}?delete=1">Remove</a>
-        </td>
-    </tr>
-    {% endfor %}
+<tr>
+<th>Product</th><th>Variation</th><th>Quantity</th><th>Unit Price</th><th>Total</th>
+</tr>
+{% for item in items %}
+<tr>
+<td>{{ item.product.title }}</td>
+<td>
+{% if item.variation %} {{ item.variation.size }} {% else %} Default {% endif %}
+</td>
+<td>{{ item.quantity }}</td>
+<td>{{ item.unit_price }}</td>
+<td>{{ item.line_total }}</td>
+</tr>
+{% endfor %}
 </table>
 
 <h3>Shipping Address</h3>
-<form method="POST" action="{% url 'place_order' %}" class="space-y-3">
-    {% csrf_token %}
-    <input name="name" placeholder="Full Name" class="w-full border p-2" required>
-    <input name="email" placeholder="Email" class="w-full border p-2" required>
-    <input name="phone" placeholder="Phone" class="w-full border p-2" required>
-    <input name="country" placeholder="Country" class="w-full border p-2" required>
-    <input name="city" placeholder="City" class="w-full border p-2" required>
-    <input name="postal_code" placeholder="Postal Code" class="w-full border p-2" required>
-    <textarea name="street" placeholder="Street Address" class="w-full border p-2" required></textarea>
+<form method="POST" action="{% url 'place_order' %}">
+{% csrf_token %}
+<input name="name" placeholder="Full Name" required>
+<input name="email" placeholder="Email" required>
+<input name="phone" placeholder="Phone" required>
+<input name="country" placeholder="Country" required>
+<input name="city" placeholder="City" required>
+<input name="postal_code" placeholder="Postal Code" required>
+<textarea name="street" placeholder="Street Address" required></textarea>
 
-    <p>Subtotal: {{ subtotal }}</p>
-    <p>Shipping Fee: {{ shipping_fee }}</p>
-    <p>Discount: {{ discount }}</p>
-    <p><strong>Grand Total: {{ grand_total }}</strong></p>
+<p>Subtotal: {{ subtotal }}</p>
+<p>Shipping Fee: {{ shipping_fee }}</p>
+<p>Discount: {{ discount }}</p>
+<p><strong>Grand Total: {{ grand_total }}</strong></p>
 
-    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Place Order</button>
+<button type="submit">Place Order</button>
 </form>
+
+{% if order %}
+<h3>Payment</h3>
+<p>Amount to pay: {{ order.grand_total }}</p>
+<form method="GET" action="{% url 'payment_init' order.id 'nogod' %}">
+<button type="submit">Pay with Nagad</button>
+</form>
+<form method="GET" action="{% url 'payment_init' order.id 'bkash' %}">
+<button type="submit">Pay with Bkash</button>
+</form>
+<form method="GET" action="{% url 'payment_init' order.id 'rocket' %}">
+<button type="submit">Pay with Rocket</button>
+</form>
+{% endif %}

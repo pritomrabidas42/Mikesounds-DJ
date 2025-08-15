@@ -5,16 +5,11 @@
 
 <h3>Items</h3>
 <table>
-<tr><th>Image</th><th>Product</th><th>Variation</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>
+<tr><th>Product</th><th>Variation</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>
 {% for item in items %}
 <tr>
-<td>{% if item.product.images.first %}<img src="{{ item.product.images.first.image.url }}" width="80">{% endif %}</td>
 <td>{{ item.product.title }}</td>
-<td>
-{% if item.variation %}
-    {{ item.variation.size }}
-{% endif %}
-</td>
+<td>{% if item.variation %}{{ item.variation.size }}{% else %}Default{% endif %}</td>
 <td>{{ item.quantity }}</td>
 <td>{{ item.unit_price }}</td>
 <td>{{ item.line_total }}</td>
@@ -22,9 +17,16 @@
 {% endfor %}
 </table>
 
-<h3>Tracking Timeline</h3>
-<ul>
-{% for t in order.tracking.all %}
-<li>{{ t.updated_at }} - {{ t.status }} - {{ t.remarks }}</li>
-{% endfor %}
-</ul>
+{% if order.payment_status == 'pending' %}
+<h3>Pay Now</h3>
+<form method="GET" action="{% url 'payment_init' order.id 'nogod' %}">
+<button type="submit">Pay with Nagad</button>
+</form>
+<form method="GET" action="{% url 'payment_init' order.id 'bkash' %}">
+<button type="submit">Pay with Bkash</button>
+</form>
+<form method="GET" action="{% url 'payment_init' order.id 'rocket' %}">
+<button type="submit">Pay with Rocket</button>
+</form>
+{% endif %}
+

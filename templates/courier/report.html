@@ -1,0 +1,32 @@
+<h2>Courier Assignment Report</h2>
+
+<form method="get">
+    <input type="date" name="start" placeholder="Start Date">
+    <input type="date" name="end" placeholder="End Date">
+    <select name="courier">
+        <option value="">All Couriers</option>
+        {% for c in couriers %}
+        <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<table border="1" cellpadding="5">
+<tr>
+<th>Order ID</th>
+<th>Courier</th>
+<th>City</th>
+<th>Address</th>
+<th>Assigned At</th>
+</tr>
+{% for a in assignments %}
+<tr>
+<td>{{ a.order.id }}</td>
+<td>{{ a.courier.name }}</td>
+<td>{{ a.order.address.city }}</td>
+<td>{{ a.order.address.line1 }}</td>
+<td>{{ a.assigned_at }}</td>
+</tr>
+{% endfor %}
+</table>

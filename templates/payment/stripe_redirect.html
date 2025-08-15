@@ -1,0 +1,17 @@
+<h2>Stripe Payment</h2>
+<script src="https://js.stripe.com/v3/"></script>
+<button id="payBtn">Pay</button>
+<script>
+var stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
+document.getElementById('payBtn').addEventListener('click', function() {
+    stripe.confirmCardPayment('{{ client_secret }}', {
+        payment_method: {card: {token: 'tok_visa'}}
+    }).then(function(result){
+        if(result.error){
+            alert('Payment failed');
+        } else {
+            window.location.href = '/orders/';
+        }
+    });
+});
+</script>

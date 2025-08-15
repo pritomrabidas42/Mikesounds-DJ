@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'reviews',
     'pages',
     'django_extensions',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +146,25 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+
+SSLCOMMERZ_URL="https://sandbox.sslcommerz.com/gwprocess/v4/api.php"
+SSLCOMMERZ_STORE_ID="store_id"
+SSLCOMMERZ_STORE_PASS="store_pass"
+SSLCOMMERZ_SECRET="ssl_secret"
+
+BKASH_URL="https://tokenized.bka.sh/checkout/payment"
+BKASH_MERCHANT="merchant_msisdn"
+BKASH_SECRET="bkash_secret"
+
+NOGOD_URL="https://sandbox.nagad.com/merchant-pay"
+NOGOD_MERCHANT_NUMBER="merchant_no"
+NOGOD_SECRET="nogod_secret"
+
 
 
 # python manage.py runserver_plus 127.0.0.1:8000 --cert-file cert.pem --key-file key.pem
