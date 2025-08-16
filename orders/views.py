@@ -63,10 +63,13 @@ def update_cart(request, item_id):
 def checkout_view(request):
     cart = get_object_or_404(Cart, user=request.user)
     addresses = Address.objects.filter(user=request.user)
+
     subtotal = sum([item.line_total for item in cart.items.all()])
-    shipping_fee = 50
+    # প্রতি product quantity এর উপর ভিত্তি করে shipping fee
+    shipping_fee = sum([item.quantity * 50 for item in cart.items.all()])
     discount = 0
     grand_total = subtotal + shipping_fee - discount
+
     return render(request, 'orders/checkout.html', {
         'cart': cart,
         'items': cart.items.all(),
@@ -143,7 +146,7 @@ def place_order(request):
         )
 
         subtotal = sum([item.line_total for item in cart.items.all()])
-        shipping_fee = 50
+        shipping_fee = sum([item.quantity * 50 for item in cart.items.all()])
         discount = 0
         grand_total = subtotal + shipping_fee - discount
 
@@ -166,7 +169,6 @@ def place_order(request):
                     quantity=item.quantity,
                     unit_price=item.unit_price
                 )
-
             cart.items.all().delete()
 
         return redirect('order_detail', order_id=order.id)

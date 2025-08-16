@@ -2,6 +2,40 @@
 {% load static %}
 
 {% block content %}
+
+<!-- Slider Section -->
+<div class="slider">
+    {% for slide in sliders %}
+        <div class="slide">
+            <a href="{{ slide.link }}">
+                <img src="{{ slide.image.url }}" alt="{{ slide.title }}">
+            </a>
+            {% if slide.title %}
+                <h3>{{ slide.title }}</h3>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No slider available</p>
+    {% endfor %}
+</div>
+
+<!-- Ads Banner Section -->
+<div class="ads">
+    {% for ad in ads %}
+        <div class="ad ad-{{ ad.position|lower }}">
+            <a href="{{ ad.link }}">
+                <img src="{{ ad.image.url }}" alt="{{ ad.title }}">
+            </a>
+            {% if ad.title %}
+                <p>{{ ad.title }}</p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No ads available</p>
+    {% endfor %}
+</div>
+
+<!-- Product Section -->
 <h2>Product List</h2>
 
 <form method="get" action="">
@@ -24,23 +58,24 @@
         <tr>
             <td>
                 {% for image in product.images.all|slice:":4" %}
-                     <a href="{% url 'product_detail' product.id %}">
-            <img src="{{ image.image.url }}" alt="{{ product.title }}" width="60" height="60">
-        </a>
+                    <a href="{% url 'product_detail' product.id %}">
+                        <img src="{{ image.image.url }}" alt="{{ product.title }}" width="60" height="60">
+                    </a>
                 {% endfor %}
             </td>
-            <a href="{% url 'product_detail' product.id %}">{{ product.title }}</a>
+            <td>
+                <a href="{% url 'product_detail' product.id %}">{{ product.title }}</a>
+            </td>
             <td>{{ product.description|truncatechars:100 }}</td>
             <td>
-            {% if product.variations.exists %}
-  {% with first_var=product.variations.all|first %}
-    {{ first_var.price }}
-  {% endwith %}
-{% else %}
-  {{ product.price }}
-{% endif %}
-
-</td>
+                {% if product.variations.exists %}
+                    {% with first_var=product.variations.all|first %}
+                        {{ first_var.price }}
+                    {% endwith %}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
             <td>{{ product.brand.name }}</td>
         </tr>
         {% empty %}

@@ -85,3 +85,32 @@ class ProductVariation(models.Model):
 
     class Meta:
         unique_together = ('product', 'size')
+class Slider(models.Model):
+    title = models.CharField(max_length=255, blank=True, null=True)
+    image = models.ImageField(upload_to='media/sliders/')
+    link = models.URLField(blank=True, null=True)
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title if self.title else "Slider " + str(self.id)
+
+
+class AdsBanner(models.Model):
+    POSITION_CHOICES = [
+        ('HOME_TOP', 'Home Top'),
+        ('HOME_SIDEBAR', 'Home Sidebar'),
+        ('PRODUCT_PAGE', 'Product Page'),
+        ('FOOTER', 'Footer'),
+    ]
+    title = models.CharField(max_length=255, blank=True, null=True)
+    image = models.ImageField(upload_to='media/ads/')
+    link = models.URLField(blank=True, null=True)
+    position = models.CharField(max_length=50, choices=POSITION_CHOICES)
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.position}" if self.title else f"Ads {self.id}"

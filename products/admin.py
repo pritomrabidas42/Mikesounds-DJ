@@ -33,3 +33,15 @@ class SubCategoryAdmin(admin.ModelAdmin):
 class BrandAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
+
+@admin.register(Slider)
+class SliderAdmin(admin.ModelAdmin):
+    list_display = ('title', 'status', 'created_at')
+    list_filter = ('status',)
+    search_fields = ('title',)
+
+@admin.register(AdsBanner)
+class AdsBannerAdmin(admin.ModelAdmin):
+    list_display = ('title', 'position', 'status', 'created_at')
+    list_filter = ('position', 'status')
+    search_fields = ('title',)

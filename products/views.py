@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product
+from .models import Product, Slider, AdsBanner
 from django.db.models import Q
 
 def product_list(request):
@@ -11,9 +11,24 @@ def product_list(request):
             Q(brand__name__icontains=query)
         )
     products = products.prefetch_related('images', 'brand')
-    context = {'products': products, 'query': query}
+
+    sliders = Slider.objects.filter(status=True)
+    ads = AdsBanner.objects.filter(status=True)
+
+    context = {
+        'products': products,
+        'query': query,
+        'sliders': sliders,
+        'ads': ads,
+    }
     return render(request, 'products/product_list.html', context)
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id, status=True)
-    return render(request, 'products/product_detail.html', {'product': product})
+    sliders = Slider.objects.filter(status=True)
+    ads = AdsBanner.objects.filter(status=True)
+    return render(request, 'products/product_detail.html', {
+        'product': product,
+        'sliders': sliders,
+        'ads': ads
+    })
